@@ -6,7 +6,7 @@ chrome.runtime.sendMessage({
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
   if ((msg.from === 'popup') && (msg.subject === 'DOMInfo')) {
     var domInfo = {
-      url: document.location.href;
+      url: window.location.href
     };
     response(domInfo);
   }
