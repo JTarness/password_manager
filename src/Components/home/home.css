@@ -6,7 +6,11 @@
   grid-template-rows: 75px 600px 125px;
   grid-template-columns: 100%;
   margin: auto;
-  background-color: black;
+  background-image: url('../images/main_BG.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: 100% 100%;
   }
   
   .main-header{
@@ -65,14 +69,13 @@
     pointer-events: none;
   }
   .macMockup {
-    height: 50vmin;
+    height: 100vmin;
     pointer-events: none;
     float: left;
   
   }
   .nav-logo{
     float: left;
-    background-color: black;
     padding-left: 15%;
     padding-top: 5%;
     color:white;

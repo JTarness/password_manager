@@ -18,14 +18,39 @@ MongoClient.connect(uri)
   })
 
 // For backend and express
+const path = require('path');
+const dotenv = require('dotenv').config();
+const { errorHandler } = require('./middleware/errorMiddleware');
 const local_port = 5000
 const express = require('express');
 const app = express();
 const cors = require("cors");
+const colors = require('colors');
 const { ObjectId } = require("mongodb");
 console.log("App listen at port " + local_port);
 app.use(express.json());
 app.use(cors());
+app.use(express.urlencoded({ extended: false }));
+
+app.use('/api/users', require('./routes/userRoutes'));
+
+
+
+// Serve frontend
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+  app.get('*', (req, res) =>
+    res.sendFile(
+      path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')
+    )
+  );
+} else {
+  app.get('/', (req, res) => res.send('Please set to production'));
+}
+
+app.use(errorHandler);
+
 
 app.get("/api/passwords", async (req, resp) => {
     await client.connect();
@@ -74,30 +99,6 @@ app.post("/api/import", async (req, resp) => {
     resp.send({ success: true });
 })
 
-app.post('/accountcreation', async (req, resp) => {
-    await client.connect();
-    console.log("Connected correctly to server");
-    AccountInfo.insertOne(req.body)
-      .then(result => {
-        console.log(result)
-      })
-      .catch(error => console.error(error))
-      resp.send({ success: true }); 
-  })
 
-  app.post('/login', async (req, resp) => {
-    await client.connect();
-    console.log("Connected correctly to server");
-    AccountInfo.aggregate([ { $match : { username : req.body.username,password: req.body.password } } ]).toArray()
-    .then(result => {
-      resp.sendStatus(200)
-        console.log(result)
-        console.log("We found it") 
-      })
-     
-      .catch(error => console.error(error))
-    
-
-  })
 
 app.listen(5000, () => console.log('API is running on http://localhost:5000/login'));

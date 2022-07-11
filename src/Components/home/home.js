@@ -1,6 +1,6 @@
 import React from 'react'
 import logo from '../images/mainlogo.png';
-import mockup from '../images/MOCKUPS.png';
+import mockup from '../images/main_BG.jpg';
 import LogIN from  '../forms/loginFORM';
 import CreateForm from '../forms/createaccountForm'; 
 import { useState } from 'react';
@@ -71,7 +71,6 @@ function Home() {
      </div>
 
      <div className='main-body'>
-      <img src={mockup} className="macMockup" alt="logo" />
      </div>
 
    

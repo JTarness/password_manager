@@ -1,39 +1,57 @@
 import React from 'react'
-import { useState } from "react"
+import { useState,useEffect  } from "react"
+import { FaSignInAlt } from 'react-icons/fa'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { login, reset } from '../features/auth/authSlice'
 import './loginFORM.css';
 import accountImage from '../images/accountsymbol.png';
 
 function Popup(props) {
    
-    const initialValues = {username:"",password:""};
-    const [inputs, setInputs] = useState(initialValues);
-
-    const handleChange = (event) => { 
-        const name = event.target.name;
-        const value = event.target.value;
-        setInputs(values => ({ ...values, [name]: value }))
-    }
-
-   async function checkValidation(event) {
-        event.preventDefault();
-        fetch('http://localhost:5000/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(inputs)
-        })
-        .then((response) => {
-            if(response.status===200)
-                {
-                    window.location.href = 'http://localhost:3000/Dashboard'
-                }
-        })
-        props.setTrigger(false)
-        if(props.trigger === true)
-            {
-                setInputs(initialValues);
-            }
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+      })
+    
+      const { email, password } = formData
+    
+      const navigate = useNavigate()
+      const dispatch = useDispatch()
+    
+      const { user, isLoading, isError, isSuccess, message } = useSelector(
+        (state) => state.auth
+      )
+    
+      useEffect(() => {
+        if (isError) {
+          toast.error(message)
+        }
+    
+        if (isSuccess || user) {
+          navigate('/')
+        }
+    
+        dispatch(reset())
+      }, [user, isError, isSuccess, message, navigate, dispatch])
+    
+      const onChange = (e) => {
+        setFormData((prevState) => ({
+          ...prevState,
+          [e.target.name]: e.target.value,
+        }))
+      }
+    
+      const onSubmit = (e) => {
+        e.preventDefault()
+    
+        const userData = {
+          email,
+          password,
+        }
+    
+        dispatch(login(userData))
       }
 
 
